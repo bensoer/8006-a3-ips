@@ -9,10 +9,15 @@ require_once('./lib/tools/ArgParcer.php');
 
 /**
  * PARAMETERS:
- * -m <check|create|read|update|delete> - Specify mode/activity to run.
+ * -m <check|create|read|update|delete|settings> - Specify mode/activity to run.
  * -i <ip> - The IP of the accessor in question
  * -s <block|unblock> - The state the record should be
  * -p <protocol> - Name of the protocol to be looking for counts of
+ *
+ * SETTING MODE PARAMETERS:
+ * -tl <timelimit> - The time limit an IP stays blocked. Value of -1 means no limit
+ * -al <attemptlimit> - The number of times an attempt can be made before it is blocked
+ * -ld <logdir> - The directory of the log file being monitored
  */
 
 
@@ -26,6 +31,8 @@ function main($argc, $argv){
     //get arguments
     $formattedArguments = ArgParcer::formatArguments($argv);
     $apInstance = ArgParcer::getInstance($formattedArguments);
+
+    //deserialize settings parameters
 
     //deserialize record manager
 
@@ -48,6 +55,8 @@ function main($argc, $argv){
 
 
     //serialize record manager
+
+    //serialize settings parameters
 
     return 0;
 }
