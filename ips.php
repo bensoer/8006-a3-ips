@@ -30,6 +30,8 @@ define("RECORDDIR","./records.ipsconf");
 
 date_default_timezone_set('America/Los_Angeles');
 
+
+
 /**
  * @param $argc
  * @param $argv
@@ -87,38 +89,80 @@ function main($argc, $argv){
                 $result = $recordManager->getRecordIfExists($record->IP, $record->SERVICE);
                 //if new record add the record
                 if($result == null){
+
                     $recordManager->addRecord($record);
 
                 //if known increment its count
                 }else{
 
-                    $result->ATTEMPTS += 1;
+                    //if it is blocking already leave it alone
+                    if($result->BLOCKTIME != null){
 
-                    //check if this record has made too many offences. If so block them
-                    if($result->ATTEMPTS >= $settings->attemptLimit){
-                        $netFilterManager = new NetFilterManager();
+                        //check if record has been blocked long enough
+                        if($settings->timeLimit == -1){
+                            //timelimit is infinite, we can never unblock anyone
+                            continue;
+                        }else{
 
+                            $datetime = date_create();
+                            $difference = date_diff($result->BLOCKTIME, $datetime);
+
+                            $days = $difference->d;
+                            $hours = $difference->h;
+                            $minutes = $difference->m;
+
+                            $totalMinutes = ($days * 24 * 60) + ($hours * 60) + ($minutes);
+
+                            if($totalMinutes > $settings->timeLimit){
+
+                                $netFilterManager = new NetFilterManager();
+                                $netFilterManager->unblock('tcp', $result->IP);
+                                $recordManager->deleteRecord($result);
+
+                            }
+
+                        }
+
+
+                    }else{
+
+                        $result->ATTEMPTS += 1;
+                        $result->LASTOFFENCETIMES[] = $record->LASTOFFENCETIMES[0];
+
+                        //check if this record has made too many offences. If so block them
+                        if($result->ATTEMPTS >= $settings->attemptLimit){
+
+                            print("Too Many Offences. Checking Threat Of Offences \n");
+
+                            if($recordManager->isOffendingFrequently($result)){
+                                print("Threat IS Offending Frequently. Blocking");
+                                $netFilterManager = new NetFilterManager();
+                                $netFilterManager->block('tcp', $result->IP);
+                                $result->BLOCKTIME = date_create();
+                            }else{
+
+                                $result->ATTEMPTS = 1;
+                            }
+                        }
+
+                        $recordManager->updateRecord($result->IP, $result->SERVICE, $result);
                     }
-
-                    $recordManager->updateRecord($result->IP, $result->SERVICE, $result);
                 }
             }
-
             var_dump($recordManager->getAllRecords());
 
-
-
-
-            //check for records that have been blocked long enough
-            //foreach one, unblock them
         }
 
 
 
-
     //serialize record manager
+    $recordManagerString = serialize($recordManager);
+    file_put_contents(RECORDDIR, $recordManagerString);
 
     //serialize settings parameters
+    $settingsString = serialize($settings);
+    file_put_contents(SETTINGDIR, $settingsString);
+
 
     return 0;
 }

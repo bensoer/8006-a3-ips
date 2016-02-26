@@ -15,7 +15,7 @@ class Record
 
     /** @var  LASTOFFENCETIME is the date stamp of the last time this record was needed to be accessed. Determines
      * whether record should be incremented or deleted */
-    public $LASTOFFENCETIME;
+    public $LASTOFFENCETIMES = Array();
     /** @var  BLOCKTIME is the date stamp of when this record/person was blocked. Used to determine when to unblock */
-    public $BLOCKTIME;
+    public $BLOCKTIME = null;
 }

@@ -110,7 +110,7 @@ class LogManager
             $record->IP = $words[10];
             $record->SERVICE = $words[13];
             $record->ATTEMPTS = 1;
-            $record->LASTOFFENCETIME = $this->createDateFromEntry($entry);
+            $record->LASTOFFENCETIMES[] = $this->createDateFromEntry($entry);
 
             return $record;
         }
