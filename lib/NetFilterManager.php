@@ -9,14 +9,20 @@
 class NetFilterManager
 {
 
+    private $sudoPassword;
+
+    public function __construct($sudoPassword){
+        $this->sudoPassword = $sudoPassword;
+    }
+
     private function generateBlockingRule($protocol, $ip){
-        $rule = "echo 'password' | sudo -S iptables -I INPUT 1 -p $protocol -s $ip -j DROP";
+        $rule = "echo '$this->sudoPassword' | sudo -S iptables -I INPUT 1 -p $protocol -s $ip -j DROP";
 
         return $rule;
     }
 
     private function generateUnBlockingRule($protocol, $ip){
-        $rule = "echo 'password' | sudo -S iptables -D INPUT -p $protocol -s $ip -j DROP";
+        $rule = "echo '$this->sudoPassword' | sudo -S iptables -D INPUT -p $protocol -s $ip -j DROP";
 
         return $rule;
     }

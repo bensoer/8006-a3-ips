@@ -14,15 +14,14 @@ class LogManager
     private $logFileDir = null;
     private $logFileContents = Array();
 
-    public function __construct($dirToLogFile){
+    public function __construct($dirToLogFile, $sudoPassword){
 
         if(!file_exists($dirToLogFile)){
             throw new InvalidArgumentException("Directory Passed Does Not Go To A File");
         }else{
             $this->logFileDir = $dirToLogFile;
 
-            //TODO: password needs to be passed in as a parameter for this call to work properly
-            exec("echo 'password' | sudo -S cat $dirToLogFile", $this->logFileContents);
+            exec("echo '$sudoPassword' | sudo -S cat $dirToLogFile", $this->logFileContents);
             //$this->logFileContents = file($dirToLogFile);
         }
     }

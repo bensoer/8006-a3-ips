@@ -13,10 +13,8 @@ require_once('./lib/NetFilterManager.php');
 
 /**
  * PARAMETERS:
- * -m <check|create|read|update|delete|settings> - Specify mode/activity to run.
- * -i <ip> - The IP of the accessor in question
- * -s <block|unblock> - The state the record should be
- * -p <protocol> - Name of the protocol to be looking for counts of
+ * -m <check|settings> - Specify mode/activity to run.
+ * -p <password> - The password needed to get sudo access
  *
  * SETTING MODE PARAMETERS:
  * -tl <timelimit> - The time limit an IP stays blocked. Value of -1 means no limit
@@ -43,6 +41,14 @@ function main($argc, $argv){
     //get arguments
     $formattedArguments = ArgParcer::formatArguments($argv);
     $apInstance = ArgParcer::getInstance($formattedArguments);
+
+
+    $sudoPassword = $apInstance->getValue("-p");
+    if($sudoPassword == null || $apInstance->getValue("-m") == null){
+        print("Invalid Parameters. Required Parameters Were Not Passed. Expected Use:\n");
+        print("ips.php -m <mode> -p <sudopassword> \n");
+        return 1;
+    }
 
     $settings = null;
     $newSettingsCreated = false;
@@ -74,7 +80,7 @@ function main($argc, $argv){
         //if to check
         if(strcmp($mode,"check")==0){
             //get login attempts list from log file - NOTE must concider date range so that you don't overlap
-            $logManager = new LogManager($settings->logDir);
+            $logManager = new LogManager($settings->logDir, $sudoPassword);
             $loginAttempts = $logManager->findNewLoginAttempts($settings->lastLogTime);
             $settings->lastLogTime = $logManager->getTimeStampOfLastEntry();
 
@@ -115,7 +121,7 @@ function main($argc, $argv){
 
                             if($totalMinutes > $settings->timeLimit){
 
-                                $netFilterManager = new NetFilterManager();
+                                $netFilterManager = new NetFilterManager($sudoPassword);
                                 $netFilterManager->unblock('tcp', $result->IP);
                                 $recordManager->deleteRecord($result);
 
@@ -136,7 +142,7 @@ function main($argc, $argv){
 
                             if($recordManager->isOffendingFrequently($result)){
                                 print("Threat IS Offending Frequently. Blocking \n");
-                                $netFilterManager = new NetFilterManager();
+                                $netFilterManager = new NetFilterManager($sudoPassword);
                                 $netFilterManager->block('tcp', $result->IP);
                                 $result->BLOCKTIME = date_create();
                             }else{
