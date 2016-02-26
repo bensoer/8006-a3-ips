@@ -2,6 +2,8 @@
 require_once('./lib/tools/ArgParcer.php');
 require_once('./lib/data/Settings.php');
 require_once('./lib/LogManager.php');
+require_once('./lib/data/RecordManager.php');
+require_once('./lib/NetFilterManager.php');
 /**
  * Created by PhpStorm.
  * User: bensoer
@@ -25,6 +27,8 @@ require_once('./lib/LogManager.php');
 
 define("SETTINGDIR","./settings.ipsconf");
 define("RECORDDIR","./records.ipsconf");
+
+date_default_timezone_set('America/Los_Angeles');
 
 /**
  * @param $argc
@@ -60,6 +64,7 @@ function main($argc, $argv){
     }else{
         print("No Record Manager Found. Creating A New One\n");
         $newRecordManagerCreated = true;
+        $recordManager = new RecordManager();
     }
 
     //based on mode decide what needs to be done next
@@ -68,15 +73,41 @@ function main($argc, $argv){
         if(strcmp($mode,"check")==0){
             //get login attempts list from log file - NOTE must concider date range so that you don't overlap
             $logManager = new LogManager($settings->logDir);
-            $logManager->findNewLoginAttempts();
+            $loginAttempts = $logManager->findNewLoginAttempts($settings->lastLogTime);
+            $settings->lastLogTime = $logManager->getTimeStampOfLastEntry();
+
+            //var_dump($logManager->getAllEntries());
+            var_dump($loginAttempts);
+            //var_dump($logManager->getTimeStampOfLastEntry());
 
             //check for matching known records
-            //if new record add the record
+            foreach($loginAttempts as $attemptString){
+                $record = $logManager->createRecordOfEntry($attemptString);
 
-            //if known increment its count
+                $result = $recordManager->getRecordIfExists($record->IP, $record->SERVICE);
+                //if new record add the record
+                if($result == null){
+                    $recordManager->addRecord($record);
 
-            //check for records which have made too many offences in given time span
-            //foreach one, block them
+                //if known increment its count
+                }else{
+
+                    $result->ATTEMPTS += 1;
+
+                    //check if this record has made too many offences. If so block them
+                    if($result->ATTEMPTS >= $settings->attemptLimit){
+                        $netFilterManager = new NetFilterManager();
+
+                    }
+
+                    $recordManager->updateRecord($result->IP, $result->SERVICE, $result);
+                }
+            }
+
+            var_dump($recordManager->getAllRecords());
+
+
+
 
             //check for records that have been blocked long enough
             //foreach one, unblock them

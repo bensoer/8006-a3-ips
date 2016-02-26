@@ -12,4 +12,5 @@ class Settings
     public $timeLimit = -1;
     public $attemptLimit = 3;
     public $logDir = "/var/log/secure";
+    public $lastLogTime = null;
 }

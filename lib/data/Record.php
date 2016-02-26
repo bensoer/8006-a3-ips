@@ -11,7 +11,7 @@ class Record
     public $IP;
     public $BLOCKED = false;
     public $ATTEMPTS = 1;
-    public $PROTOCOL;
+    public $SERVICE;
 
     /** @var  LASTOFFENCETIME is the date stamp of the last time this record was needed to be accessed. Determines
      * whether record should be incremented or deleted */
