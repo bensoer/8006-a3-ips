@@ -22,7 +22,6 @@ class NetFilterManager
     }
 
     public function block($protocol, $ip){
-        print("Executing Block");
         $rule = $this->generateBlockingRule($protocol, $ip);
 
         exec($rule);

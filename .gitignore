@@ -1,2 +1,4 @@
 #Don't inclue developers workspace preferences
 /.idea/workspace.xml
+/records.ipsconf
+/settings.ipsconf

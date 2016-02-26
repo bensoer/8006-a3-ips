@@ -135,7 +135,7 @@ function main($argc, $argv){
                             print("Too Many Offences. Checking Threat Of Offences \n");
 
                             if($recordManager->isOffendingFrequently($result)){
-                                print("Threat IS Offending Frequently. Blocking");
+                                print("Threat IS Offending Frequently. Blocking \n");
                                 $netFilterManager = new NetFilterManager();
                                 $netFilterManager->block('tcp', $result->IP);
                                 $result->BLOCKTIME = date_create();
@@ -153,8 +153,28 @@ function main($argc, $argv){
 
         }
 
+        //if the mode is to update / set settings
+        if(strcmp($mode,"settings")==0){
+            //tl al ld
+            $timeLimit = $apInstance->getValue("-tl");
+            $attemptLimit = $apInstance->getValue("-al");
+            $logDir = $apInstance->getValue("-ld");
+
+            if($timeLimit != null){
+                $settings->timeLimit = $timeLimit;
+            }
+
+            if($attemptLimit != null){
+                $settings->attemptLimit = $attemptLimit;
+            }
+
+            if($logDir != null){
+                $settings->logDir = $logDir;
+            }
+        }
 
 
+    print("Now Serializing Content \n");
     //serialize record manager
     $recordManagerString = serialize($recordManager);
     file_put_contents(RECORDDIR, $recordManagerString);

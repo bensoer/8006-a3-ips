@@ -30,7 +30,7 @@ class LogManager
     private function isGreaterThenDate($thresholdDate, $dateInQuestion){
         $formattedDateInQuestion = date_create_from_format('M d G:i:s', $dateInQuestion);
 
-        echo "DATE IN QUESTION";
+        /*echo "DATE IN QUESTION";
         var_dump($formattedDateInQuestion);
         echo "THRESHOLD DATE";
         var_dump($thresholdDate);
@@ -39,7 +39,7 @@ class LogManager
             echo "DATE IN QUESTION IS GREATER / NEWER";
         }elsE{
             echo "THRESHOLD DATE IS GREATER / NEWER";
-        }
+        }*/
 
         return ($dateInQuestion > $thresholdDate);
     }
@@ -58,7 +58,7 @@ class LogManager
                 }
             }
 
-            return $filterList;
+
 
         //else we start from after the timestamp in the log
         }else{
@@ -75,6 +75,8 @@ class LogManager
                 }
             }
         }
+
+        return $filterList;
     }
 
     public function getTimeStampOfLastEntry(){
@@ -106,9 +108,22 @@ class LogManager
         if(ServiceChecker::sshd($entry)){
             $words = explode(" ", $entry);
 
+
             $record = new Record();
-            $record->IP = $words[10];
-            $record->SERVICE = $words[13];
+
+            if(strcmp($words[10],"logname=")==0 && strcmp($words[13],"tty=ssh")==0){
+                print("Found this record");
+                $ipseg = $words[15];
+                $record->IP = substr($ipseg,6,strlen($ipseg));
+
+            }else{
+                $record->IP = $words[10];
+            }
+
+            $servseg = $words[4];
+            $service = substr($servseg, 0, strpos($servseg, "["));
+            $record->SERVICE = $service;
+
             $record->ATTEMPTS = 1;
             $record->LASTOFFENCETIMES[] = $this->createDateFromEntry($entry);
 
