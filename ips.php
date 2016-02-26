@@ -1,5 +1,7 @@
 <?php
 require_once('./lib/tools/ArgParcer.php');
+require_once('./lib/data/Settings.php');
+require_once('./lib/LogManager.php');
 /**
  * Created by PhpStorm.
  * User: bensoer
@@ -21,6 +23,9 @@ require_once('./lib/tools/ArgParcer.php');
  */
 
 
+define("SETTINGDIR","./settings.ipsconf");
+define("RECORDDIR","./records.ipsconf");
+
 /**
  * @param $argc
  * @param $argv
@@ -28,29 +33,55 @@ require_once('./lib/tools/ArgParcer.php');
  */
 function main($argc, $argv){
 
+
     //get arguments
     $formattedArguments = ArgParcer::formatArguments($argv);
     $apInstance = ArgParcer::getInstance($formattedArguments);
 
-    //deserialize settings parameters
+    $settings = null;
+    $newSettingsCreated = false;
+    $newRecordManagerCreated = false;
 
+    //deserialize settings parameters
+    if(file_exists(SETTINGDIR)){
+        $fileContents = file_get_contents(SETTINGDIR);
+        $settings = unserialize($fileContents);
+    }else{
+        print("No Settings Config Could Be Found. Creating A New One\n");
+        $settings = new Settings();
+        $newSettingsCreated = true;
+    }
+
+    $recordManager = null;
     //deserialize record manager
+    if(file_exists(RECORDDIR)){
+        $recordFileContents = file_get_contents(RECORDDIR);
+        $recordManager = unserialize($recordFileContents);
+    }else{
+        print("No Record Manager Found. Creating A New One\n");
+        $newRecordManagerCreated = true;
+    }
 
     //based on mode decide what needs to be done next
-
+    $mode = $apInstance->getValue("-m");
         //if to check
+        if(strcmp($mode,"check")==0){
             //get login attempts list from log file - NOTE must concider date range so that you don't overlap
+            $logManager = new LogManager($settings->logDir);
+            $logManager->findNewLoginAttempts();
 
             //check for matching known records
-                //if new record add the record
+            //if new record add the record
 
-                //if known increment its count
+            //if known increment its count
 
             //check for records which have made too many offences in given time span
-                //foreach one, block them
+            //foreach one, block them
 
             //check for records that have been blocked long enough
-                //foreach one, unblock them
+            //foreach one, unblock them
+        }
+
 
 
 
