@@ -1,5 +1,5 @@
 <?php
-
+require_once('../lib/data/Settings.php');
 /**
  * Created by PhpStorm.
  * User: bensoer
@@ -9,4 +9,37 @@
 class SettingsTest extends PHPUnit_Framework_TestCase
 {
 
+    public function testDefaultAttributes(){
+
+        $settings = new Settings();
+
+        $this->assertEquals(-1, $settings->timeLimit);
+        $this->assertEquals(3, $settings->attemptLimit);
+        $this->assertEquals("/var/log/secure", $settings->logDir);
+        $this->assertNull($settings->lastLogTime);
+    }
+
+    public function testCreateSettings(){
+
+        $settings = new Settings();
+
+        $this->assertInstanceOf("Settings", $settings);
+    }
+
+    public function testChangingSettings(){
+        date_default_timezone_set('America/Los_Angeles');
+
+        $settings = new Settings();
+
+        $settings->timeLimit = 3;
+        $settings->attemptLimit = 50;
+        $settings->logDir = "/some/other/dir";
+        $settings->lastLogTime = date_create();
+
+        $this->assertEquals(3, $settings->timeLimit);
+        $this->assertEquals(50, $settings->attemptLimit);
+        $this->assertEquals("/some/other/dir", $settings->logDir);
+        $this->assertNotNull($settings->lastLogTime);
+
+    }
 }

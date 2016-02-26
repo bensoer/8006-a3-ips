@@ -9,4 +9,14 @@
 class RecordManagerTest extends PHPUnit_Framework_TestCase
 {
 
+    public function testCreateRecordManager(){
+
+        $recordManager = new RecordManager();
+
+        $this->assertInstanceOf("RecordManager", $recordManager);
+    }
+
+
+
+
 }
