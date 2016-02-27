@@ -6,6 +6,11 @@ require_once("./lib/data/SSHRecord.php");
  * Date: 27/02/16
  * Time: 10:35 AM
  */
+
+/**
+ * Class SSHRecord is an extension of Record with the added ability to specialize in creating records for the SSH service.
+ * This allows unique implementations to be created specificaly for this service on various different logging files
+ */
 class SSHRecord extends Record
 {
 
@@ -21,6 +26,10 @@ class SSHRecord extends Record
 
     }
 
+    /**
+     * createFromMessagesLog parses the logEntry based on the assumption that it is from the /var/log/messages file
+     * @param $logEntry String - the log entry from the /var/log/messages file to be parsed into a Record object
+     */
     private final function createFromMessagesLog($logEntry){
         //Feb 27 10:30:04 ironhide audit: <audit-1100> pid=7368 uid=0 auid=4294967295 ses=4294967295 subj=system_u:system_r:sshd_t:s0-s0:c0.c1023 msg='op=password acct="bensoer" exe="/usr/sbin/sshd" hostname=? addr=127.0.0.1 terminal=ssh res=failed'
 
@@ -41,6 +50,10 @@ class SSHRecord extends Record
 
     }
 
+    /**
+     * createFromSecureLog parses the logEntry based on teh assumption that it is from the /var/log/secure file
+     * @param $logEntry String - the log entry from the /var/log/secure file to be parsed into a Record object
+     */
     private final function createFromSecureLog($logEntry){
         $words = explode(" ", $logEntry);
 

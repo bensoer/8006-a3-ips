@@ -21,6 +21,13 @@ final class ArgParcer
      */
     private function __construct(){}
 
+    /**
+     * formatArguments is a static helper method for taking the $argv array and parsing it into an associative array
+     * to be used by the ArgPArcer instance
+     * @param array $argv - The argv array passed by php containing the initialization parameters passed to the program
+     * @return array - An associative array with the passed in parameters sorted with the key being the flag and the value
+     * being the value for that flag when it was passed as an initializer parameter
+     */
     public static function formatArguments(Array $argv){
         //ArgParcer::$unformattedArguments = $argv;
         $formattedArguments = Array();
@@ -47,7 +54,13 @@ final class ArgParcer
         return $formattedArguments;
     }
 
-    public static function getInstance(Array $formattedArguments){
+    /**
+     * getInstance returns a singleton instance of the ArgParcer object. Note passed in arguments will not
+     * be used if an instance has already been created
+     * @param array $formattedArguments - the formatted arguments of the argv parameters into an associative array
+     * @return ArgParcer - the singleton instance of the ArgParcer
+     */
+    public static function getInstance(Array $formattedArguments = null){
         if(self::$instance == null){
             self::$formattedArguments = $formattedArguments;
             self::$instance = new ArgParcer();

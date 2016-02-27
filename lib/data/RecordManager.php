@@ -6,19 +6,31 @@
  * Date: 24/02/16
  * Time: 5:40 PM
  */
+
+/**
+ * Class RecordManager is in charge of the management of the main records array and allow CRUD actions to be taken
+ * against it in a managed way.
+ */
 class RecordManager
 {
 
     private $records = Array();
 
-    public function __construct(){
-
-    }
-
+    /**
+     * addRecord adds the passed in record to the end of the records array
+     * @param Record $record - A record being added to the records array of the RecordManager
+     */
     public function addRecord(Record $record){
         $this->records[] = $record;
     }
 
+    /**
+     * getRecordIfExists attempts to find a record matching the passed in ip and service parameters in the records
+     * array. If it can not be found this method returns null
+     * @param $ip String - the ip of the record we are trying to find
+     * @param $service String - the service of the record we are trying to find
+     * @return (null|Record) - the found record or null if it can not be found
+     */
     public function getRecordIfExists($ip, $service){
 
         foreach($this->records as $record){
@@ -30,6 +42,13 @@ class RecordManager
         return null;
     }
 
+    /**
+     * updateRecord updates a record that matches the passed in ip and service parameters. Once a match is found, the
+     * mathcing record is then completely replaced by the passed in record
+     * @param $ip String - the ip of the record we are trying to find and update
+     * @param $service String - the service of the record we are trying to find and update
+     * @param Record $record - the record that will be replacing the record matching the passed in ip and service
+     */
     public function updateRecord($ip, $service, Record $record){
 
         for($i = 0; $i < count($this->records); $i++){
@@ -41,6 +60,10 @@ class RecordManager
         }
     }
 
+    /**
+     * deleteRecord deletes the first record it finds that matches the passed in record's IP and SERVICE values
+     * @param Record $toBeDeletedRecord - the record that is going to be deleted from the RecordManager
+     */
     public function deleteRecord(Record $toBeDeletedRecord){
         for($i=0; $i < $this->records; $i++){
             if(strcmp($this->records[$i]->IP, $toBeDeletedRecord->IP)==0 && strcmp($this->records[$i]->SERVICE, $toBeDeletedRecord->SERVICE)==0){
@@ -50,10 +73,22 @@ class RecordManager
         }
     }
 
+    /**
+     * getAllRecords returns the record array stored in the RecordManager
+     * @return array - the records array managed by the RecordManager
+     */
     public function getAllRecords(){
         return $this->records;
     }
 
+    /**
+     * getTotalMinutesFromDif is a helper method for calculating how many minutes are in a DateInterval. DateIntervals
+     * seperate out how many months,days,hours, etc and do not count assumulatively, so this calculation brings them
+     * all together
+     * @param DateInterval $diff - the DateInterval object we are calculating the total minutes from by parsing out and
+     * doing math to the year, month, day, hour and minutes attributes
+     * @return int - the total number of minutes in the DateInterval
+     */
     private function getTotalMinutesFromDif(DateInterval $diff){
         $totalMinutes = 0;
 
@@ -66,6 +101,17 @@ class RecordManager
         return $totalMinutes;
     }
 
+    /**
+     * isOffendingFrequently determines if a passed in record has been offending regularily enough to be on grounds to
+     * being blocked. isOffendingFrequently first gets the interval times between each offence. It then checks if any of
+     * them have occured at a greater time then the offence threshold. Being greater then the offenceThreshold assumes
+     * then the offences may have been from seperate login attempts. Next it then checks all intervals if their values are
+     * identical. This could mean that the attacker is a bot and is sending attempts at frequencies lower then the offenceThreshold
+     * @param Record $record - the record we are determining if is offending
+     * @param int $offenceThreshold - the number of minutes an interval has to be between to be concidered an offence
+     * @return bool - whether or not the passed in record is offending. TRUE = they are offending and should be blocked
+     * FALSE = they are not offending often enough and should not be blocked
+     */
     public function isOffendingFrequently(Record $record, $offenceThreshold = 3){
 
         $intervals = Array();

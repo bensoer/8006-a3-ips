@@ -31,9 +31,10 @@ date_default_timezone_set('America/Los_Angeles');
 
 
 /**
- * @param $argc
- * @param $argv
- * @return int
+ * main is the main entry point of the ips program
+ * @param $argc Integer - the number of arguments in the arv array
+ * @param $argv Array - the arguments passed as initializer variables
+ * @return int - Status of whether the program ran successfuly or failed. 0 means success, 1 means failure
  */
 function main($argc, $argv){
 
