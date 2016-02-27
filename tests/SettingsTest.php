@@ -9,6 +9,9 @@ require_once('../lib/data/Settings.php');
 class SettingsTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * S_UT1
+     */
     public function testDefaultAttributes(){
 
         $settings = new Settings();
@@ -19,6 +22,9 @@ class SettingsTest extends PHPUnit_Framework_TestCase
         $this->assertNull($settings->lastLogTime);
     }
 
+    /**
+     * S_UT2
+     */
     public function testCreateSettings(){
 
         $settings = new Settings();
@@ -26,6 +32,9 @@ class SettingsTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf("Settings", $settings);
     }
 
+    /**
+     * S_UT3
+     */
     public function testChangingSettings(){
         date_default_timezone_set('America/Los_Angeles');
 

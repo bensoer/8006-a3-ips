@@ -14,6 +14,9 @@ class ServiceCheckerTest extends PHPUnit_Framework_TestCase
     private $invalidString1 = "jdslkajdklsajkdjskaklsa  jdslka jk ldsaj lajldska";
     private $invalidString2 = "Feb 25 17:30:51 ironhide jkdlsa[4963]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=127.0.0.1  user=bensoer";
 
+    /**
+     * SC_UT1
+     */
     public function testPosotiveSSHD(){
 
         $result1 = ServiceChecker::sshd($this->validString1);
@@ -24,6 +27,9 @@ class ServiceCheckerTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * SC_UT2
+     */
     public function testNegativeSSHD(){
 
         $result1 = ServiceChecker::sshd($this->invalidString1);

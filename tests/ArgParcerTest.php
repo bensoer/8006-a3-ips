@@ -10,6 +10,9 @@ class ArgParcerTest extends PHPUnit_Framework_TestCase
 {
     private $array = Array("programname", "-a", "value1", "-b", "value2");
 
+    /**
+     * AP_UT1
+     */
     public function testFormatArguments(){
 
         $formattedArray = ArgParcer::formatArguments($this->array);
@@ -19,6 +22,9 @@ class ArgParcerTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey("-b", $formattedArray);
     }
 
+    /**
+     * AP_UT2
+     */
     public function testFormatNullArguments(){
 
         $formattedArray = ArgParcer::formatArguments(Array());
@@ -26,6 +32,9 @@ class ArgParcerTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($formattedArray);
     }
 
+    /**
+     * AP_UT3
+     */
     public function testGetInstance(){
 
         $formattedArray = ArgParcer::formatArguments($this->array);
@@ -34,6 +43,9 @@ class ArgParcerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf("ArgParcer", $instance);
     }
 
+    /**
+     * AP_UT4
+     */
     public function testGetKey(){
 
         $formattedArray = ArgParcer::formatArguments($this->array);

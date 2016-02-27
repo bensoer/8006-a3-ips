@@ -2,6 +2,7 @@
 require_once('./lib/tools/ServiceChecker.php');
 require_once('./lib/data/Record.php');
 require_once('./lib/data/SSHRecord.php');
+require_once('./lib/data/TelnetRecord.php');
 
 
 /**
@@ -53,7 +54,7 @@ class LogManager
             //var_dump($this->logFileContents);
 
             foreach($this->logFileContents as $logEntry){
-                if(ServiceChecker::sshd($logEntry)){
+                if(ServiceChecker::isAnOffenceToAService($logEntry)){
                     $filterList[] = $logEntry;
                 }
             }
@@ -69,7 +70,7 @@ class LogManager
 
                 if($this->isGreaterThenDate($lastSearchTimeStamp, $pulledDate)){
 
-                    if(ServiceChecker::sshd($logEntry)){
+                    if(ServiceChecker::isAnOffenceToAService($logEntry)){
                         $filterList[] = $logEntry;
                     }
                 }
@@ -103,6 +104,10 @@ class LogManager
 
         if(ServiceChecker::sshd($entry)){
             return new SSHRecord($entry);
+        }
+
+        if(ServiceChecker::telnet($entry)){
+            return new TelnetRecord($entry);
         }
 
 

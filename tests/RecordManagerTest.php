@@ -10,6 +10,9 @@ require_once('../lib/data/Record.php');
 class RecordManagerTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * RM_UT1
+     */
     public function testCreateRecordManager(){
 
         $recordManager = new RecordManager();
@@ -17,6 +20,9 @@ class RecordManagerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf("RecordManager", $recordManager);
     }
 
+    /**
+     * RM_UT2
+     */
     public function testAddRecord(){
 
         $record = new Record();
@@ -31,6 +37,9 @@ class RecordManagerTest extends PHPUnit_Framework_TestCase
         $this->assertArraySubset(array($record), $allRecords);
     }
 
+    /**
+     * RM_UT3
+     */
     public function testDeleteRecord(){
 
         $record = new Record();
@@ -46,6 +55,9 @@ class RecordManagerTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * RM_UT4
+     */
     public function testUpdateRecord(){
 
         $record = new Record();
@@ -69,6 +81,9 @@ class RecordManagerTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * RM_UT5
+     */
     public function testGetRecordIfExists1(){
 
         $record = new Record();
@@ -82,6 +97,9 @@ class RecordManagerTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * RM_UT6
+     */
     public function testGetRecordIfExists2(){
 
         $record = new Record();
@@ -95,6 +113,9 @@ class RecordManagerTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * RM_UT7
+     */
     public function testIsOffendingFrequently1(){
         date_default_timezone_set('America/Los_Angeles');
 
@@ -111,6 +132,9 @@ class RecordManagerTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * RM_UT8
+     */
     public function testIsOffendingFrequently2(){
         date_default_timezone_set('America/Los_Angeles');
 

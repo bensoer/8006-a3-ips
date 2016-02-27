@@ -9,6 +9,10 @@
 class ServiceChecker
 {
 
+    public static function isAnOffenceToAService($logEntry){
+        return (self::sshd($logEntry) || self::telnet($logEntry));
+    }
+
     public static function sshd($logEntry){
         //if using /log/var/secure
         if(strpos($logEntry, "sshd") && ( strpos($logEntry, "Failed password") || strpos($logEntry, "authentication failures") )){
@@ -22,11 +26,16 @@ class ServiceChecker
     }
 
     public static function telnet($logEntry){
+        //if using /log/var/secure
 
-    }
+        //good luck figuring that out champ
 
-    public static function sftp($logEntry){
+        //if using /log/var/messages
+        if(strpos($logEntry, "subj=system_u:system_r:remote_login_t:s0 msg='op=login") && strpos($logEntry, "res=failed")){
+            return true;
+        }
 
+        return false;
     }
 
 }

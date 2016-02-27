@@ -9,6 +9,9 @@ require_once('../lib/data/Record.php');
 class RecordTest extends PHPUnit_Framework_TestCase
 {
 
+    /**
+     * R_UT1
+     */
     public function testCreateRecord(){
 
         $record = new Record();
@@ -16,6 +19,9 @@ class RecordTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf("Record", $record);
     }
 
+    /**
+     * R_UT2
+     */
     public function testDefaultAttributes(){
 
         $record = new Record();
@@ -27,6 +33,9 @@ class RecordTest extends PHPUnit_Framework_TestCase
 
     }
 
+    /**
+     * R_UT3
+     */
     public function testSettingAttributes(){
 
         $record = new Record();
