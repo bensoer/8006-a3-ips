@@ -34,7 +34,7 @@ class NetFilterManager
     }
 
     public function unblock($protocol, $ip){
-        $rule = $this->generateBlockingRule($protocol, $ip);
+        $rule = $this->generateUnBlockingRule($protocol, $ip);
 
         exec($rule);
     }

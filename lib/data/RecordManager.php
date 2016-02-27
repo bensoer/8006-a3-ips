@@ -83,7 +83,7 @@ class RecordManager
             $totalMinutes = $this->getTotalMinutesFromDif($interval);
             print($totalMinutes);
             if($totalMinutes > $offenceThreshold){
-                print("found out of bounds threshold \n");
+                //print("found out of bounds threshold \n");
                 $isNotOffendingFrequently = true;
             }
         }

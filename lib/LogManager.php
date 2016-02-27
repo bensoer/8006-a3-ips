@@ -111,7 +111,7 @@ class LogManager
             $record = new Record();
 
             if(strcmp($words[10],"logname=")==0 && strcmp($words[13],"tty=ssh")==0){
-                print("Found this record");
+                //print("Found this record");
                 $ipseg = $words[15];
                 $record->IP = substr($ipseg,6,strlen($ipseg));
 

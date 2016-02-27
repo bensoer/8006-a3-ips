@@ -79,6 +79,7 @@ function main($argc, $argv){
     $mode = $apInstance->getValue("-m");
         //if to check
         if(strcmp($mode,"check")==0){
+            print("Check Mode Activated. Checking For New Threats \n");
             //get login attempts list from log file - NOTE must concider date range so that you don't overlap
             $logManager = new LogManager($settings->logDir, $sudoPassword);
             $loginAttempts = $logManager->findNewLoginAttempts($settings->lastLogTime);
@@ -104,30 +105,7 @@ function main($argc, $argv){
                     //if it is blocking already leave it alone
                     if($result->BLOCKTIME != null){
 
-                        //check if record has been blocked long enough
-                        if($settings->timeLimit == -1){
-                            //timelimit is infinite, we can never unblock anyone
-                            continue;
-                        }else{
-
-                            $datetime = date_create();
-                            $difference = date_diff($result->BLOCKTIME, $datetime);
-
-                            $days = $difference->d;
-                            $hours = $difference->h;
-                            $minutes = $difference->m;
-
-                            $totalMinutes = ($days * 24 * 60) + ($hours * 60) + ($minutes);
-
-                            if($totalMinutes > $settings->timeLimit){
-
-                                $netFilterManager = new NetFilterManager($sudoPassword);
-                                $netFilterManager->unblock('tcp', $result->IP);
-                                $recordManager->deleteRecord($result);
-
-                            }
-
-                        }
+                        continue;
 
 
                     }else{
@@ -155,26 +133,64 @@ function main($argc, $argv){
                     }
                 }
             }
-            var_dump($recordManager->getAllRecords());
+            //var_dump($recordManager->getAllRecords());
+
+            print("Now Checking Records For Offences That Can Be Unblocked \n");
+            if($settings->timeLimit == -1){
+                print("Can't Do Any Unblocking. Timeout Limit Is Set To Inifinite \n");
+
+            }else{
+                //check if anything can be unblocked
+                $allRecords = $recordManager->getAllRecords();
+                foreach($allRecords as $record){
+
+                    if($record->BLOCKTIME != null){
+                        //check if record has been blocked long enough
+
+                        $datetime = date_create();
+                        $difference = date_diff($record->BLOCKTIME, $datetime);
+
+                        $days = $difference->d;
+                        $hours = $difference->h;
+                        $minutes = $difference->i;
+
+                        $totalMinutes = ($days * 24 * 60) + ($hours * 60) + ($minutes);
+
+                        if($totalMinutes > $settings->timeLimit){
+
+                            print("Found A Record Whose Block Time Has Exceeded The Time Limit. Unblocking \n");
+                            $netFilterManager = new NetFilterManager($sudoPassword);
+                            $netFilterManager->unblock('tcp', $record->IP);
+                            $recordManager->deleteRecord($record);
+
+                        }
+                    }
+                }
+            }
+
 
         }
 
         //if the mode is to update / set settings
         if(strcmp($mode,"settings")==0){
+            print("Settings Mode Detected. Altering Settings To Parameters \n");
             //tl al ld
             $timeLimit = $apInstance->getValue("-tl");
             $attemptLimit = $apInstance->getValue("-al");
             $logDir = $apInstance->getValue("-ld");
 
             if($timeLimit != null){
+                print("Settings - New Time Limit Supplied. Adjusting \n");
                 $settings->timeLimit = $timeLimit;
             }
 
             if($attemptLimit != null){
+                print("Settings - New Attempt Limit Supplied. Adjusting \n");
                 $settings->attemptLimit = $attemptLimit;
             }
 
             if($logDir != null){
+                print("Settings - New Log Directory Supplied. Adjusting \n");
                 $settings->logDir = $logDir;
             }
         }
