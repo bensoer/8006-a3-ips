@@ -1,6 +1,7 @@
 <?php
 require_once('./lib/tools/ServiceChecker.php');
 require_once('./lib/data/Record.php');
+require_once('./lib/data/SSHRecord.php');
 
 
 /**
@@ -91,11 +92,7 @@ class LogManager
 
     }
 
-    private function createDateFromEntry($entry){
-        $words = explode(" ", $entry);
-        $pulledDate = "$words[0] $words[1] $words[2]";
-        return date_create_from_format('M d G:i:s', $pulledDate);
-    }
+
 
     public function getAllEntries(){
         return $this->logFileContents;
@@ -105,30 +102,10 @@ class LogManager
     public function createRecordOfEntry($entry){
 
         if(ServiceChecker::sshd($entry)){
-            $words = explode(" ", $entry);
-
-
-            $record = new Record();
-
-            if(strcmp($words[10],"logname=")==0 && strcmp($words[13],"tty=ssh")==0){
-                //print("Found this record");
-                $ipseg = $words[15];
-                $record->IP = substr($ipseg,6,strlen($ipseg));
-
-            }else{
-                $record->IP = $words[10];
-            }
-
-            $servseg = $words[4];
-            $service = substr($servseg, 0, strpos($servseg, "["));
-            $record->SERVICE = $service;
-
-            $record->ATTEMPTS = 1;
-            $record->LASTOFFENCETIMES[] = $this->createDateFromEntry($entry);
-
-            return $record;
+            return new SSHRecord($entry);
         }
 
-    }
 
+
+    }
 }
