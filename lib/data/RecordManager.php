@@ -42,15 +42,28 @@ class RecordManager
     }
 
     public function deleteRecord(Record $toBeDeletedRecord){
-        foreach($this->records as $record){
-            if(strcmp($record->IP, $toBeDeletedRecord->IP)==0 && strcmp($record->SERVICE, $toBeDeletedRecord->SERVICE)==0){
-                return $record;
+        for($i=0; $i < $this->records; $i++){
+            if(strcmp($this->records[$i]->IP, $toBeDeletedRecord->IP)==0 && strcmp($this->records[$i]->SERVICE, $toBeDeletedRecord->SERVICE)==0){
+                unset($this->records[$i]);
+                break;
             }
         }
     }
 
     public function getAllRecords(){
         return $this->records;
+    }
+
+    private function getTotalMinutesFromDif(DateInterval $diff){
+        $totalMinutes = 0;
+
+        $totalMinutes += ($diff->y * 365 * 24* 60);
+        $totalMinutes += ($diff->m * 30 * 24 * 60);
+        $totalMinutes += ($diff->d * 24 * 60);
+        $totalMinutes += ($diff->h * 60);
+        $totalMinutes += $diff->i;
+
+        return $totalMinutes;
     }
 
     public function isOffendingFrequently(Record $record, $offenceThreshold = 3){
@@ -67,16 +80,20 @@ class RecordManager
         //likely be within short bursts, attempts of eachother. Otherwise this could be someone trying to get in at different
         //session times
         foreach($intervals as $interval){
-            if($interval->m > $offenceThreshold){
+            $totalMinutes = $this->getTotalMinutesFromDif($interval);
+            print($totalMinutes);
+            if($totalMinutes > $offenceThreshold){
+                print("found out of bounds threshold \n");
                 $isNotOffendingFrequently = true;
             }
         }
 
+
         //now check if the time differences though are the exact same, this could infer a bot is trying to enter. And
         //could just be entering very slowly
         $isCommon = true;
-        $commonSet = $intervals[0];
-        for($i = 1; $i < count($intervals)-1 ; $i++){
+        for($i = 0; $i < count($intervals) - 1 ; $i++){
+            $commonSet = $intervals[$i + 1];
             if($intervals[$i]->y != $commonSet->y){
                 $isCommon = false;
                 break;
