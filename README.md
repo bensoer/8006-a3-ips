@@ -23,13 +23,11 @@ it will then read this file and adjust accordingly.
 
 The following flags will allow you to change the desired settings:
 
-
-To change your settings run the following command:
- Flag | Description
- --- | ---
- -tl | Set the time limit that a blocked user will be blocked for. -1 means no time limit
- -al | Set the maximum number of attempts that can occur before a user is blocked
- -ld | Set the log directory to be reasing from. Current support is for the `/var/log/messages` and `/var/log/secure` files
+Flag | Description
+---- | -----------
+-tl | Set the time limit that a blocked user will be blocked for. -1 means no time limit
+-al | Set the maximum number of attempts that can occur before a user is blocked
+-ld | Set the log directory to be reasing from. Current support is for the `/var/log/messages` and `/var/log/secure` files
  
 An example of using the command is like this:
 ```
