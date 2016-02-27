@@ -43,11 +43,6 @@ php ips.php -m settings -tl <timelimit> -al <attemptlimit> -ld <logdir>
 ```
 Note that by not including the parameter, the setting will not be changed from whatever it was previously set to
 
-Once that has been completed you are now able to run `ips.php` in check mode with your new settings. This will cause the ips to scan your log
-file and keep records of authorization attempts made on your system. You can run check mode manually like this:
-```
-php ips.php -m check -p <sudopassword>
-```
 ## 2) Configure With Cron
 The next step is then to setup the `ips4cron.sh` with crontab.
 
@@ -61,3 +56,13 @@ If you run into issues `ips.php` can be reset back to defaults simply by deletin
 Deleting the `records.ipsconf` file will remove all history and knowledge `ips.php` has gained by accessing and monitoring your log files and is generaly
 not recommended unless wanting to do a complete restore. If you would like to reset `ips.php`'s settings back to default you can do this by deleting the
 `settings.ipsconf`. The next time `ips.php` runs in either `check` or `settings` mode a new file will be regenerated.
+
+# Run ips.php manualy
+You can always run the `ips.php` check manually if you would like to test it out. Note that this will only execute it once and it will terminate
+after scanning logs and recording records of login attempts. To continue scanning manualy would require rerunning the program and thus using crontab
+is the recommended approach.
+
+You can run `ips.php` manualy with the following command:
+```
+php ips.php -m check -p <sudopassword>
+```
