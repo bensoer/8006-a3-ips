@@ -53,7 +53,7 @@ class NetFilterManager
     public function block($protocol, $ip){
         $rule = $this->generateBlockingRule($protocol, $ip);
 
-        print("Executing Rule: " . $rule);
+        //print("Executing Rule: " . $rule);
 
         exec($rule);
     }
@@ -66,7 +66,7 @@ class NetFilterManager
     public function unblock($protocol, $ip){
         $rule = $this->generateUnBlockingRule($protocol, $ip);
 
-        print("Executing Rule: " . $rule);
+        //print("Executing Rule: " . $rule);
 
         exec($rule);
     }

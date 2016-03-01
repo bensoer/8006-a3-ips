@@ -46,10 +46,7 @@ class TelnetRecord extends Record
 
 
           if(strpos($ipseg, ":")){
-
-            print($ipseg . "\n");
             $ip = substr($ipseg, strrpos($ipseg, ":")+1, strlen($ipseg) - (strrpos($ipseg, ":") + 1));
-            print($ip . "\n");
           }else{
             $ip = substr($ipseg, strpos($ipseg,"=")+1, strlen($ipseg) - (strpos($ipseg, "=")+1));
           }
@@ -63,7 +60,6 @@ class TelnetRecord extends Record
         $this->ATTEMPTS = 1;
         $this->LASTOFFENCETIMES[] = $this->createDateFromEntry($logEntry);
 
-        print($this->IP);
     }
 
     /**
