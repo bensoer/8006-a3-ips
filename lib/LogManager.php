@@ -50,6 +50,8 @@ class LogManager
     private function isGreaterThenDate($thresholdDate, $dateInQuestion){
         $formattedDateInQuestion = date_create_from_format('M d G:i:s', $dateInQuestion);
 
+        //var_dump($formattedDateInQuestion);
+
         /*echo "DATE IN QUESTION";
         var_dump($formattedDateInQuestion);
         echo "THRESHOLD DATE";
@@ -61,7 +63,13 @@ class LogManager
             echo "THRESHOLD DATE IS GREATER / NEWER";
         }*/
 
-        return ($dateInQuestion > $thresholdDate);
+        //$d1->format('U') < $d2->format('U')
+        //print("Formatted Date: " . $formattedDateInQuestion->format('u'));
+        //print("threshold Date: " . $thresholdDate->format('u'));
+        //var_dump($thresholdDate);
+        //var_dump($formattedDateInQuestion);
+
+        return ($formattedDateInQuestion > $thresholdDate);
     }
 
 
@@ -90,9 +98,12 @@ class LogManager
         //else we start from after the timestamp in the log
         }else{
 
+            //print("There is a threshold \n");
+
             foreach($this->logFileContents as $logEntry){
                 $words = explode(" ", $logEntry);
                 $pulledDate = "$words[0] $words[1] $words[2]";
+
 
                 if($this->isGreaterThenDate($lastSearchTimeStamp, $pulledDate)){
 

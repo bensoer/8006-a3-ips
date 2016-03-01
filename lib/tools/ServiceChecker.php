@@ -50,8 +50,11 @@ class ServiceChecker
 
         //good luck figuring that out champ
 
+
+        //Feb 29 15:35:11 datacomm audit: <audit-1112> pid=7735 uid=0 auid=4294967295 ses=4294967295 msg='op=login id=0 exe="/usr/bin/login" hostname=::ffff:192.168.0.10 addr=::ffff:192.168.0.10 terminal=pts/7 res=failed'
+
         //if using /log/var/messages
-        if(strpos($logEntry, "subj=system_u:system_r:remote_login_t:s0 msg='op=login") && strpos($logEntry, "res=failed")){
+        if(strpos($logEntry, "msg='op=login") && strpos($logEntry, "res=failed")){
             return true;
         }
 

@@ -98,6 +98,7 @@ function main($argc, $argv){
                 //if new record add the record
                 if($result == null){
 
+                    //record is new
                     $recordManager->addRecord($record);
 
                 //if known increment its count
@@ -168,8 +169,6 @@ function main($argc, $argv){
                     }
                 }
             }
-
-
         }
 
         //if the mode is to update / set settings
