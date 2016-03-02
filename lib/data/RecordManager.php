@@ -51,6 +51,9 @@ class RecordManager
      */
     public function updateRecord($ip, $service, Record $record){
 
+        //var_dump($record);
+        //var_dump($this->records);
+
         for($i = 0; $i < count($this->records); $i++){
             if(strcmp($this->records[$i]->IP, $ip)==0 && strcmp($this->records[$i]->SERVICE, $service)==0){
 
@@ -65,6 +68,10 @@ class RecordManager
      * @param Record $toBeDeletedRecord - the record that is going to be deleted from the RecordManager
      */
     public function deleteRecord(Record $toBeDeletedRecord){
+
+        //var_dump($toBeDeletedRecord);
+        //var_dump($this->records);
+
         for($i=0; $i < $this->records; $i++){
             if(strcmp($this->records[$i]->IP, $toBeDeletedRecord->IP)==0 && strcmp($this->records[$i]->SERVICE, $toBeDeletedRecord->SERVICE)==0){
                 unset($this->records[$i]);
@@ -127,7 +134,7 @@ class RecordManager
         //session times
         foreach($intervals as $interval){
             $totalMinutes = $this->getTotalMinutesFromDif($interval);
-            print($totalMinutes);
+            //print($totalMinutes);
             if($totalMinutes > $offenceThreshold){
                 //print("found out of bounds threshold \n");
                 $isNotOffendingFrequently = true;

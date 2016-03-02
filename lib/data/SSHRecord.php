@@ -33,20 +33,40 @@ class SSHRecord extends Record
     private final function createFromMessagesLog($logEntry){
         //Feb 27 10:30:04 ironhide audit: <audit-1100> pid=7368 uid=0 auid=4294967295 ses=4294967295 subj=system_u:system_r:sshd_t:s0-s0:c0.c1023 msg='op=password acct="bensoer" exe="/usr/sbin/sshd" hostname=? addr=127.0.0.1 terminal=ssh res=failed'
 
+        //print("creating sshd from message log \n");
+
         $words = explode(" ", $logEntry);
 
-        $serviceseg = $words[13];
-        $service = substr(strrpos($serviceseg,"/")+1, strlen($serviceseg));
+        if(strpos($words[13], "sshd")){
+            $serviceseg = $words[13];
+            $service = substr($serviceseg, strrpos($serviceseg,"/")+1, (strlen($serviceseg)-strrpos($serviceseg,"/")+1));
+        }else if(strpos($words[14], "sshd")){
+            $serviceseg = $words[14];
+            $service = substr($serviceseg, strrpos($serviceseg,"/")+1, (strlen($serviceseg)-strrpos($serviceseg,"/")+1));
+        }else{
+            throw new ErrorException("Can't Find Service Name");
+        }
 
-        $ipseg = $words[15];
-        $ip = substr(strpos($ipseg,"=")+1, strlen($ipseg));
+
+        if(strpos($words[15],"addr") !== false){
+            $ipseg = $words[15];
+            $ip = substr($ipseg, strpos($ipseg,"=")+1, (strlen($ipseg)-strpos($ipseg,"=")+1));
+        }else if(strpos($words[16], "addr") !== false){
+            $ipseg = $words[16];
+            $ip = substr($ipseg, strpos($ipseg,"=")+1, (strlen($ipseg)-strpos($ipseg,"=")+1));
+        }else{
+            var_dump($words[15]);
+            var_dump($words[16]);
+            print(strpos($words[16], "addr"));
+
+            throw new ErrorException("Can't Find IP Address");
+        }
 
         $this->IP = $ip;
         $this->SERVICE = $service;
 
         $this->ATTEMPTS = 1;
         $this->LASTOFFENCETIMES[] = $this->createDateFromEntry($logEntry);
-
 
     }
 
@@ -60,7 +80,7 @@ class SSHRecord extends Record
         if(strcmp($words[10],"logname=")==0 && strcmp($words[13],"tty=ssh")==0){
             //print("Found this record");
             $ipseg = $words[15];
-            $this->IP = substr($ipseg,6,strlen($ipseg));
+            $this->IP = substr($ipseg,6,strlen($ipseg)-6);
 
         }else{
             $this->IP = $words[10];

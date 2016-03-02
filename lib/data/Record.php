@@ -34,10 +34,30 @@ class Record
      * entry when trying to parse out a record object from the log entry
      * @param $entry String - the log entry containing date information
      * @return DateTime - the date object generated from date information parsed out of the log entry
+     * @throws ErrorException - Thrown when a date is failed to be created from the entry
      */
     protected function createDateFromEntry($entry){
         $words = explode(" ", $entry);
-        $pulledDate = "$words[0] $words[1] $words[2]";
-        return date_create_from_format('M d G:i:s', $pulledDate);
+
+        $pulledDate = "";
+        if(empty($words[1])){
+            $pulledDate = "$words[0] $words[1] $words[2] $words[3]";
+        }else{
+            $pulledDate = "$words[0] $words[1] $words[2]";
+        }
+
+        //print("Pulled Date: $pulledDate \n");
+
+        $dateObject = date_create_from_format('M d G:i:s', $pulledDate);
+        if($dateObject == false){
+            $dateObject = date_create_from_format('M  d G:i:s', $pulledDate);
+        }
+
+        if($dateObject == false){
+            throw new ErrorException("Date Object Could Not Be Created");
+        }
+
+        return $dateObject;
     }
+
 }

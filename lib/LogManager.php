@@ -126,12 +126,24 @@ class LogManager
         $lastEntry = $this->logFileContents[count($this->logFileContents)-1];
 
         $words = explode(" ", $lastEntry);
-        $pulledDate = "$words[0] $words[1] $words[2]";
 
-        //echo $lastEntry . "\n";
-        //echo $pulledDate . "\n";
+        $pulledDate = "";
+        if(empty($words[1])){
+            $pulledDate = "$words[0] $words[1] $words[2] $words[3]";
+        }else{
+            $pulledDate = "$words[0] $words[1] $words[2]";
+        }
 
-        return date_create_from_format('M d G:i:s', $pulledDate);
+
+        $dateTime = date_create_from_format('M d G:i:s', $pulledDate);
+        if($dateTime === false){
+            $dateTime = date_create_from_format('M  d G:i:s', $pulledDate);
+        }
+        if($dateTime === false){
+            throw new ErrorException("Failed To Create Date From TimeStamp");
+        }
+
+        return $dateTime;
 
     }
 
