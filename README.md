@@ -66,3 +66,9 @@ You can run `ips.php` manualy with the following command:
 ```
 php ips.php -m check -p <sudopassword>
 ```
+
+# File Structure
+File structure of this project may appear initialy confusing. So below is to help calrify it. The `docs` folder contains all tests images and all
+documentation on design documentation and test documentation. Within the `lib` folder is all library components of the `ips.php` file which is located
+at the project root. Additionally there is a `tests` folder at the root. This contains the phpunit library and phpunit test code. Note that to find
+documentation and images of these unit tests or general tests, that is located in the `docs/tests`, not this `tests` folder.
