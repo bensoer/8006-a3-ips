@@ -83,7 +83,13 @@ class SSHRecord extends Record
             $this->IP = substr($ipseg,6,strlen($ipseg)-6);
 
         }else{
-            $this->IP = $words[10];
+
+            if(strcmp($words[10],"from")){
+                $this->IP = $words[11];
+            }else{
+                $this->IP = $words[10];
+            }
+
         }
 
         $servseg = $words[4];
